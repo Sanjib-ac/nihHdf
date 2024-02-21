@@ -12,30 +12,37 @@ __version__ = 'V1.0.0'
 class nih_ads_hdf:
     def __init__(self, filename: str):
         self.file = filename
+        self.f_obj = None
         self.data = None
+        self.get_file_info()
 
     def get_file_info(self):
-        with h5py.File(self.file, 'r') as f:
-            # print(list(f.items()))
-            print(f.keys())
-            print("*" * 60)
-            for i, file_keys in enumerate(f.keys()):
-                print(f'{i + 1}: {file_keys}')
-                group = f[file_keys]
-                print(f'Shape:{group.shape}\n')
-                print(f'data:{list(group)}')
-            f.close()
+        self.f_obj = h5py.File(self.file, 'r')
+        print(self.f_obj.keys())
+        print("*" * 60, end='\n\n')
+        self.close()
+
+        # with h5py.File(self.file, 'r') as self.f_obj:
+        #     # print(list(self.f_obj.items()))
+        #     print(self.f_obj.keys())
+        #     print("*" * 60)
 
     def read_file(self):
-        pass
+        self.f_obj = h5py.File(self.file, 'r')
+        for i, file_keys in enumerate(self.f_obj.keys()):
+            print(f'{i + 1}: {file_keys}')
+            group = self.f_obj[file_keys]
+            print(f'Shape:{group.shape}')
+            print(f'data:{list(group)}\n\n')
+        self.close()
 
     def close(self):
-        pass
+        self.f_obj.close()
 
 
 def read_hdf(file):
     hdf_file = nih_ads_hdf(file)
-    hdf_file.get_file_info()
+    hdf_file.read_file()
 
 
 if __name__ == '__main__':
